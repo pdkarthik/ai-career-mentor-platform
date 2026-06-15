@@ -202,8 +202,8 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
     resetChatToStart();
   };
 
-  const handleSendChat = async (e) => {
-    e.preventDefault();
+  const handleSendChat = async (e, retryText = null) => {
+    if (e) e.preventDefault();
     if (isLoading) {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -211,14 +211,21 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
       return;
     }
     
-    if (!chatInput.trim()) return;
+    const userInput = retryText || chatInput.trim();
+    if (!userInput) return;
 
-    const userInput = chatInput.trim();
-    setChatInput('');
+    if (!retryText) {
+      setChatInput('');
+    }
 
-    // Append user message
-    const updatedMessages = [...chatMessages, { role: 'user', content: userInput }];
-    setChatMessages(updatedMessages);
+    let updatedMessages = chatMessages;
+    if (retryText) {
+      updatedMessages = chatMessages.filter(msg => !msg.isError);
+      setChatMessages(updatedMessages);
+    } else {
+      updatedMessages = [...chatMessages, { role: 'user', content: userInput }];
+      setChatMessages(updatedMessages);
+    }
 
     if (currentQuestionIndex === 7) {
       setIsLoading(true);
@@ -258,7 +265,8 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
         } else {
           setChatMessages(prev => [...prev, {
             role: 'assistant',
-            content: `🤖 **AI Career Mentor**: ⚠️ Network error communicating with real-time AI Mentor.`
+            content: `🤖 **AI Career Mentor**: ⚠️ Network error communicating with real-time AI Mentor.`,
+            isError: true
           }]);
         }
       } finally {
@@ -318,7 +326,8 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
         } else {
           setChatMessages(prev => [...prev, {
             role: 'assistant',
-            content: `🤖 **AI Career Mentor**: ⚠️ Network error during AI onboarding.`
+            content: `🤖 **AI Career Mentor**: ⚠️ Network error during AI onboarding.`,
+            isError: true
           }]);
         }
       } finally {
@@ -711,22 +720,21 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
                     🤖 AI Career Coach
                   </span>
                 </div>
-                {userSession && (
-                  <button 
-                    onClick={handleLogout} 
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: 'var(--error)',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      outline: 'none'
-                    }}
-                  >
-                    Reset Session
-                  </button>
-                )}
+                <button 
+                  onClick={handleLogout} 
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--error)',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    outline: 'none'
+                  }}
+                  title="Clear Chat & Restart"
+                >
+                  Clear Chat
+                </button>
               </div>
 
               {/* Tab Toggler (Dynamic Gap Analysis) */}
@@ -820,7 +828,8 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
                     {chatMessages.map((msg, index) => (
                       <div key={index} style={{
                         display: 'flex',
-                        justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                        flexDirection: 'column',
+                        alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start',
                         width: '100%'
                       }}>
                         <div style={{
@@ -844,6 +853,31 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
                         }}>
                           <RenderChatContent text={msg.content} />
                         </div>
+                        {msg.isError && (
+                          <button
+                            onClick={() => {
+                              const reversed = [...chatMessages].reverse();
+                              const lastUserMsg = reversed.find(m => m.role === 'user');
+                              if (lastUserMsg) {
+                                handleSendChat(null, lastUserMsg.content);
+                              }
+                            }}
+                            className="btn btn-outline"
+                            style={{
+                              marginTop: '8px',
+                              padding: '6px 12px',
+                              fontSize: '0.8rem',
+                              borderRadius: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              color: 'var(--error)',
+                              borderColor: 'var(--error)'
+                            }}
+                          >
+                            ↻ Retry
+                          </button>
+                        )}
                       </div>
                     ))}
                     {isLoading && (
