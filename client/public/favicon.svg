@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <!-- Purple-to-Pink Brand Gradient Rounded Square (Squircle) matching the Navbar Logo -->
+  <rect x="2" y="2" width="44" height="44" rx="10" fill="url(#sheCanBrandGrad)" />
+  
+  <!-- White Outline Award Medal Icon in Center -->
+  <circle cx="24" cy="20" r="7" stroke="#ffffff" stroke-width="3" fill="none" />
+  <path d="M20 25 L17 37 L24 33 L31 37 L28 25" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none" />
+  
+  <defs>
+    <!-- She Can Brand Purple-to-Pink Gradient -->
+    <linearGradient id="sheCanBrandGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#695CFE" />
+      <stop offset="100%" stop-color="#F43F97" />
+    </linearGradient>
+  </defs>
+</svg>

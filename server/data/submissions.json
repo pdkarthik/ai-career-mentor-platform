@@ -1,0 +1,10 @@
+{
+  "submissions": [],
+  "admins": [
+    {
+      "_id": "admin-static-id",
+      "username": "admin",
+      "password": "$2a$10$9bZj8bXdHSNyJlo29S.CFu5FgpP2vRPt/Jg8fJ22pEX3zy3UsTba2"
+    }
+  ]
+}
