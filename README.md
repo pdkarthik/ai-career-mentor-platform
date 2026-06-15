@@ -1,5 +1,7 @@
 # AI Career Mentor: Resilient MERN Platform with Background Processing
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://ai-career-mentor-platform.vercel.app)
+
 Welcome to the **AI Career Mentor** platform! This complete MERN stack application provides an intelligent, automated AI mentor that engages with candidates, evaluates technical proficiency asynchronously, and dynamically generates custom career roadmaps and gap analyses—-backed by a resilient, fault-tolerant backend architecture. It also features a sleek, secure Admin Portal for HR/Admins to review these sessions seamlessly.
 
 ---
