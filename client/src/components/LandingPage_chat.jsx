@@ -30,16 +30,35 @@ export default function LandingPage({ onToggleAdmin, apiBaseUrl, theme, onToggle
   // Load user session from localStorage on mount (using our isolated prefix!)
   useEffect(() => {
     const cachedUser = localStorage.getItem('nayepankh_user');
+    const cachedSessions = localStorage.getItem('nayepankh_sessions');
     if (cachedUser) {
       try {
         const parsedUser = JSON.parse(cachedUser);
         setUser(parsedUser);
-        initializeSessions(parsedUser.email, parsedUser.name, parsedUser.analysis);
+        
+        if (cachedSessions) {
+          const parsedSessions = JSON.parse(cachedSessions);
+          setSessions(parsedSessions);
+          if (parsedSessions.length > 0) {
+            setCurrentSessionId(parsedSessions[0].sessionId);
+            setMessages(parsedSessions[0].messages);
+          }
+        } else {
+          initializeSessions(parsedUser.email, parsedUser.name, parsedUser.analysis);
+        }
       } catch (e) {
         localStorage.removeItem('nayepankh_user');
+        localStorage.removeItem('nayepankh_sessions');
       }
     }
   }, []);
+
+  // Save sessions to localStorage whenever they update
+  useEffect(() => {
+    if (sessions.length > 0) {
+      localStorage.setItem('nayepankh_sessions', JSON.stringify(sessions));
+    }
+  }, [sessions]);
 
   const initializeSessions = (email, name, analysis) => {
     const initialSessionId = `sess_${Date.now()}`;
@@ -235,6 +254,7 @@ export default function LandingPage({ onToggleAdmin, apiBaseUrl, theme, onToggle
 
   const handleLogoutUser = () => {
     localStorage.removeItem('nayepankh_user');
+    localStorage.removeItem('nayepankh_sessions');
     setUser(null);
     setEmailInput('');
     setProfileInput({

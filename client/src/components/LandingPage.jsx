@@ -18,20 +18,29 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
 
   // --- Conversational Chatbot States ---
   const [userSession, setUserSession] = useState(null); // Holds { name, email, id }
-  const [profileInput, setProfileInput] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    targetRole: '',
-    skills: '',
-    education: '',
-    experience: ''
+  const [profileInput, setProfileInput] = useState(() => {
+    const cached = localStorage.getItem('nayepankh_profileInput');
+    return cached ? JSON.parse(cached) : {
+      name: '',
+      email: '',
+      phone: '',
+      targetRole: '',
+      skills: '',
+      education: '',
+      experience: ''
+    };
   });
   const [userAnalysis, setUserAnalysis] = useState(null);
   const [showGaps, setShowGaps] = useState(false);
   
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [chatMessages, setChatMessages] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
+    const cached = localStorage.getItem('nayepankh_questionIndex');
+    return cached ? parseInt(cached, 10) : 0;
+  });
+  const [chatMessages, setChatMessages] = useState(() => {
+    const cached = localStorage.getItem('nayepankh_chatMessages');
+    return cached ? JSON.parse(cached) : [];
+  });
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -73,9 +82,27 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
         resetChatToStart();
       }
     } else {
-      resetChatToStart();
+      const cachedMessages = localStorage.getItem('nayepankh_chatMessages');
+      if (!cachedMessages) {
+        resetChatToStart();
+      }
     }
   }, []);
+
+  // Save states to localStorage whenever they update
+  useEffect(() => {
+    localStorage.setItem('nayepankh_questionIndex', currentQuestionIndex.toString());
+  }, [currentQuestionIndex]);
+
+  useEffect(() => {
+    if (chatMessages.length > 0) {
+      localStorage.setItem('nayepankh_chatMessages', JSON.stringify(chatMessages));
+    }
+  }, [chatMessages]);
+
+  useEffect(() => {
+    localStorage.setItem('nayepankh_profileInput', JSON.stringify(profileInput));
+  }, [profileInput]);
 
   // Auto scroll to chat bottom without moving the page window
   useEffect(() => {
@@ -146,14 +173,18 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
   };
 
   const resetChatToStart = () => {
-    setChatMessages([
-      { role: 'assistant', content: QUESTIONS[0].prompt }
-    ]);
+    const initialMsg = [{ role: 'assistant', content: QUESTIONS[0].prompt }];
+    setChatMessages(initialMsg);
+    localStorage.setItem('nayepankh_chatMessages', JSON.stringify(initialMsg));
+    
     setCurrentQuestionIndex(0);
+    localStorage.setItem('nayepankh_questionIndex', '0');
+    
     setUserSession(null);
     setUserAnalysis(null);
     setShowGaps(false);
-    setProfileInput({
+    
+    const initialProfile = {
       name: '',
       email: '',
       phone: '',
@@ -161,7 +192,9 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
       skills: '',
       education: '',
       experience: ''
-    });
+    };
+    setProfileInput(initialProfile);
+    localStorage.setItem('nayepankh_profileInput', JSON.stringify(initialProfile));
   };
 
   const handleLogout = () => {
