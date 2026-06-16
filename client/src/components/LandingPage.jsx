@@ -435,6 +435,11 @@ const LandingPage = ({ onToggleAdmin, apiBaseUrl, theme, onToggleTheme }) => {
         }
       } catch (err) {
         console.error('Error fetching student by email:', err);
+        setChatMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `🤖 **AI Career Mentor**: ⚠️ Network error checking email. Please try again.`,
+          isError: true
+        }]);
       }
       setIsLoading(false);
       return;

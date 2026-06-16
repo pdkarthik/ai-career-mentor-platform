@@ -259,7 +259,6 @@ const AdminPortal = ({ onToggleLanding, apiBaseUrl, theme, onToggleTheme }) => {
     setIsAuthenticated(false);
     setSubmissions([]);
     setSelectedSubmission(null);
-    onToggleLanding();
   };
 
   // CRUD: Update Submission Status (with Optimistic Updates)
