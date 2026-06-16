@@ -30,6 +30,9 @@ From a developer’s point of view, this project is designed around a scalable, 
   - **Dynamic Gap Reports:** Admins can instantly view the LLM-generated Gap Analysis, including visual progress bars reflecting the candidate's proficiency percentages, and a week-by-week actionable roadmap.
   - **Adaptive UI:** The portal elegantly switches between a side-by-side desktop layout to a highly optimized, scroll-friendly vertical stack on mobile devices.
 - **Security & Rate Limiting:** The backend is hardened with `express-rate-limit` to protect against spam and brute-force attacks. It utilizes dual-layered thresholds: a strict 5-request limit per 15 minutes on the Admin login to prevent password guessing, and a 20-request per minute limit on the AI Chat endpoint to prevent API spam and preserve LLM credits.
+- **UX Resilience & Fault Tolerance:** Free-tier hosting platforms often put backends to sleep, causing timeouts. The frontend mitigates this with state-of-the-art resilience:
+  - **Local Storage Persistence:** The entire chat transcript, user session, and dynamic index are cached strictly in the browser. If a timeout crashes the app, the user can refresh the page without losing a single message.
+  - **Intelligent Retry Logic:** If a network failure occurs, an intuitive 'Retry' button appears. Clicking it seamlessly strips the error message, retrieves the last user prompt, and re-triggers the specific API endpoint—all silently in the background without requiring the user to retype their message.
 - **Aesthetic Excellence:** Custom-built UI features like smooth modal animations, responsive dynamic chat bubbles with sender-aware coloring, custom thumb tracks, and integrated Light/Dark modes.
 
 ---

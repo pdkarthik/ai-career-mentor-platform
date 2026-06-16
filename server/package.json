@@ -1,7 +1,7 @@
 {
-  "name": "she-can-foundation-server",
+  "name": "nayepankh-ai-mentor-server",
   "version": "1.0.0",
-  "description": "Backend API server for She Can Foundation application portal",
+  "description": "Backend API server for NayePankh AI Career Mentor",
   "main": "server.js",
   "type": "module",
   "scripts": {
